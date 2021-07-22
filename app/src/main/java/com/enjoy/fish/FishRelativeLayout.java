@@ -19,6 +19,8 @@ import android.widget.RelativeLayout;
 
 import androidx.annotation.RequiresApi;
 
+import java.util.Random;
+
 public class FishRelativeLayout extends RelativeLayout {
 
     private Paint mPaint;
@@ -78,6 +80,7 @@ public class FishRelativeLayout extends RelativeLayout {
         touchX = event.getX();
         touchY = event.getY();
 
+        //点击的水波纹
         mPaint.setAlpha(100);
         ObjectAnimator objectAnimator = ObjectAnimator.ofFloat(this,
                 "ripple", 0, 1f).setDuration(1000);
@@ -88,6 +91,9 @@ public class FishRelativeLayout extends RelativeLayout {
         return super.onTouchEvent(event);
     }
 
+    /**
+     * 让鱼朝着点击方向游动
+     */
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     private void makeTrail() {
 
@@ -127,6 +133,12 @@ public class FishRelativeLayout extends RelativeLayout {
                 super.onAnimationStart(animation);
                 // 设置鱼游动速度———频率加快
                 fishDrawable.setFrequence(3f);
+
+                //摆动鱼鳍
+                ObjectAnimator finsAnimator = ObjectAnimator.ofFloat(fishDrawable, "finsValue", 0, fishDrawable.getHEAD_RADIUS() * 2, 0);
+                finsAnimator.setRepeatCount(new Random().nextInt(4));
+                finsAnimator.setDuration((new Random().nextInt(1) + 1) * 500);
+                finsAnimator.start();
             }
         });
 

@@ -54,6 +54,9 @@ public class FishDrawable extends Drawable {
     float currentValue = 0;
     private PointF headPoint;
 
+    //鱼鳍变化值
+    private float finsValue = 0;
+
     public FishDrawable() {
         init();
     }
@@ -224,8 +227,18 @@ public class FishDrawable extends Drawable {
         // 鱼鳍的终点 --- 二阶贝塞尔曲线的终点
         PointF endPoint = calculatePoint(startPoint, FINS_LENGTH, fishAngle - 180);
         // 控制点
-        PointF controlPoint = calculatePoint(startPoint, FINS_LENGTH * 1.8f,
-                isRight ? fishAngle - controlAngle : fishAngle + controlAngle);
+       /* PointF controlPoint = calculatePoint(startPoint, FINS_LENGTH * 1.8f,
+                isRight ? fishAngle - controlAngle : fishAngle + controlAngle);*/
+
+
+        //鱼鳍变化
+        float controlFishCrossLength = (float) (FINS_LENGTH * 1.8f * Math.cos(Math.toRadians(65)));
+        PointF controlFishCrossPoint = calculatePoint(startPoint, controlFishCrossLength, fishAngle - 180);
+        float lineLength = (float) Math.abs(Math.tan(Math.toRadians(controlAngle)) * HEAD_RADIUS);
+        float line = lineLength - finsValue;
+        PointF controlPoint = calculatePoint(controlFishCrossPoint, line,
+                isRight ? (fishAngle - 90) : (fishAngle + 90));
+
         // 绘制
         mPath.reset();
         // 将画笔移动到起始点
@@ -302,5 +315,14 @@ public class FishDrawable extends Drawable {
 
     public void setFishMainAngle(float fishMainAngle) {
         this.fishMainAngle = fishMainAngle;
+    }
+
+
+    public float getFinsValue() {
+        return finsValue;
+    }
+
+    public void setFinsValue(float finsValue) {
+        this.finsValue = finsValue;
     }
 }
